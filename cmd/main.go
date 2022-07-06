@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	db.Connect()
+	db.ConnectDefault()
 
 	if db.DB != nil {
 		defer db.DB.Close()

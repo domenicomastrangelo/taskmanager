@@ -4,16 +4,21 @@ import (
 	"database/sql"
 	"log"
 	"os"
+	"strings"
 
 	_ "github.com/mattn/go-sqlite3"
 )
 
 var DB *sql.DB
 
-func Connect() *sql.DB {
-	if DB == nil {
-		var err error
+func ConnectDefault() *sql.DB {
+	return Connect("", "")
+}
 
+func Connect(dbDirPath string, dbFileName string) *sql.DB {
+	var dbFilePath string
+
+	if strings.Compare(dbDirPath, "") == 0 || strings.Compare(dbFileName, "") == 0 {
 		homeDir, err := os.UserHomeDir()
 
 		if err != nil {
@@ -21,9 +26,17 @@ func Connect() *sql.DB {
 			return nil
 		}
 
-		if _, err := os.Stat(homeDir + "/.taskmanager/db.sqlite"); os.IsNotExist(err) {
-			os.MkdirAll(homeDir+"/.taskmanager", 0700)
-			file, err := os.Create(homeDir + "/.taskmanager/db.sqlite")
+		dbFilePath = homeDir + "/.taskmanager/db.sqlite"
+	} else {
+		dbFilePath = dbDirPath + dbFileName
+	}
+
+	if DB == nil {
+		var err error
+
+		if _, err := os.Stat(dbFilePath); os.IsNotExist(err) {
+			os.MkdirAll(dbDirPath, 0700)
+			file, err := os.Create(dbFilePath)
 
 			if err != nil {
 				log.Println("Cannot create db.sqlite file")
@@ -33,7 +46,7 @@ func Connect() *sql.DB {
 			file.Close()
 		}
 
-		DB, err = sql.Open("sqlite3", homeDir+"/.taskmanager/db.sqlite")
+		DB, err = sql.Open("sqlite3", dbFilePath)
 
 		createDBIfNotExists()
 
