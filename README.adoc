@@ -1,0 +1,20 @@
+== Taskmanager
+=== Compile
+[source,bash]
+git clone https://github.com/domenicomastrangelo/taskmanager
+cd taskmanager
+./make build-local
+mv ./build/taskmanager.local /usr/local/bin/taskmanager
+
+=== How to use
+==== List
+[source,bash]
+taskmanager list
+
+==== Add
+[source,bash]
+taskmanager add -t "This is the title" -m "This is the message"
+
+==== Set Done
+[source,bash]
+taskmanager set-done -done true
