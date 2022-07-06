@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/domenicomastrangelo/taskmanager/internal/db"
@@ -55,6 +56,11 @@ func main() {
 		messageArg := flag.String("m", "", "Task message")
 		flag.Parse()
 
+		if strings.Compare(*titleArg, "") == 0 || (strings.Compare(*messageArg, "") == 0) {
+			flag.PrintDefaults()
+			return
+		}
+
 		t := task.Task{
 			Title:   *titleArg,
 			Message: *messageArg,
@@ -63,8 +69,13 @@ func main() {
 	case "delete":
 	case "set-done":
 		IDArg := flag.Int("id", 0, "Task ID")
-		doneArg := flag.Bool("done", false, "Task ID")
+		doneArg := flag.Bool("done", false, "true or false")
 		flag.Parse()
+
+		if *IDArg == 0 {
+			flag.PrintDefaults()
+			return
+		}
 
 		t := task.Task{
 			ID:   *IDArg,
