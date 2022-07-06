@@ -14,3 +14,16 @@ func TestList(t *testing.T) {
 
 	assert.IsType(t, Tasks{}, tasks)
 }
+
+func TestAdd(t *testing.T) {
+	db.Connect()
+	task := Task{
+		Title:     "This is the title",
+		Message:   "This is the message",
+		Done:      false,
+		CreatedAt: time.Now().UTC(),
+	}
+	res := task.Add()
+
+	assert.Equal(t, res, true)
+}
